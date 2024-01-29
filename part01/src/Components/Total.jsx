@@ -1,4 +1,4 @@
-export const TotalComponent = (props) => {
+export const Total = (props) => {
   return (
     <p>
       Number of exercises

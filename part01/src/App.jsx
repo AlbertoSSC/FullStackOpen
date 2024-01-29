@@ -1,6 +1,6 @@
-import { HeaderComponent } from "./Components/Header";
-import { ContentComponent } from "./Components/Content";
-import { TotalComponent } from "./Components/Total";
+import { Header } from "./Components/Header";
+import { Content } from "./Components/Content";
+import { Total } from "./Components/Total";
 
 const App = () => {
   const course = "Half Stack application development";
@@ -13,8 +13,8 @@ const App = () => {
 
   return (
     <>
-      <HeaderComponent courseName={course} />
-      <ContentComponent
+      <Header courseName={course} />
+      <Content
         part1={part1}
         part2={part2}
         part3={part3}
@@ -22,7 +22,7 @@ const App = () => {
         exercises2={exercises2}
         exercises3={exercises3}
       />
-      <TotalComponent
+      <Total
         exercises1={exercises1}
         exercises2={exercises2}
         exercises3={exercises3}
