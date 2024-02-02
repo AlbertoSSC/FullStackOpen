@@ -27,20 +27,20 @@ const App = () => {
       {good === 0 && bad === 0 && neutral === 0 ? (
         <span>No feecbacks given </span>
       ) : (
-        <>
-          <StatisticsLine text="good" value={good} />
-          <br />
-          <StatisticsLine text="neutral" value={neutral} />
-          <br />
-          <StatisticsLine text="bad" value={bad} />
-          <br />
-          <br />
-          <StatisticsLine text="total" value={total} />
-          <br />
-          <StatisticsLine text="average" value={average.toFixed(2)} />
-          <br />
-          <StatisticsLine text="positive" value={positive.toFixed(2)} />
-        </>
+        <table>
+          <colgroup>
+            <col style={{ backgroundColor: "lightgrey" }} />
+            <col />
+          </colgroup>
+          <tbody>
+            <StatisticsLine text="good" value={good} />
+            <StatisticsLine text="neutral" value={neutral} />
+            <StatisticsLine text="bad" value={bad} />
+            <StatisticsLine text="total" value={total} />
+            <StatisticsLine text="average" value={average.toFixed(2)} />
+            <StatisticsLine text="positive" value={positive.toFixed(2)} />
+          </tbody>
+        </table>
       )}
     </>
   );
