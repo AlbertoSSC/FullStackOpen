@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Total } from "./Components/Total";
 import { Header } from "./Components/Header";
 import { ButtonComp } from "./Components/Button";
+import { Statistics } from "./Components/Statistics";
 
 const App = () => {
   // save clicks of each button to its own state
@@ -20,7 +20,7 @@ const App = () => {
       <ButtonComp handleClick={() => setBad(bad + 1)} text="bad" />
 
       <h2>Statistics</h2>
-      <Total goodCount={good} neutralCount={neutral} badCount={bad} />
+      <Statistics goodCount={good} neutralCount={neutral} badCount={bad} />
     </>
   );
 };
