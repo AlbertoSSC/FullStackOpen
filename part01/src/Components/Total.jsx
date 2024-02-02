@@ -1,10 +1,11 @@
 export const Total = (props) => {
   return (
-    <p>
-      Number of exercises:{" "}
-      {props.course.parts[0].exercises +
-        props.course.parts[1].exercises +
-        props.course.parts[2].exercises}
-    </p>
+    <>
+      <span>good: {props.goodCount}</span>
+      <br />
+      <span>neutral: {props.neutralCount}</span>
+      <br />
+      <span>bad: {props.badCount}</span>
+    </>
   );
 };
