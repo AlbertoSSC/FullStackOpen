@@ -3,7 +3,7 @@ export const AddNewContactForm = ({
   newPhone,
   handleNameInput,
   handlePhoneInput,
-  handleNewName,
+  handleNewContact,
 }) => {
   return (
     <form>
@@ -14,7 +14,7 @@ export const AddNewContactForm = ({
         phone: <input value={newPhone} onChange={handlePhoneInput} />
       </div>
       <div>
-        <button type="submit" onClick={handleNewName}>
+        <button type="submit" onClick={handleNewContact}>
           add
         </button>
       </div>

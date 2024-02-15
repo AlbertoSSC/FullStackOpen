@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { FilterList } from "./components/FilterList";
 import { AddNewContactForm } from "./components/AddNewContact";
 import { ContacList } from "./components/ContactList";
+import { Notification } from "./components/Notification";
+
+import contactService from "./services/contact.service";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", phone: "040-123456", id: 1 },
-    { name: "Ada Lovelace", phone: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", phone: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", phone: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
+  const [showFilteredPersons, setShowFilteredPersons] = useState([]);
+
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
-  const [showFilteredPersons, setShowFilteredPersons] = useState([]);
+
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationClass, setNotificationClass] = useState("");
+
+  useEffect(() => {
+    contactService.getContactList().then(setPersons);
+  }, []);
 
   const handleNameInput = (event) => {
     setNewName(event.target.value);
@@ -22,21 +29,81 @@ const App = () => {
     setNewPhone(event.target.value);
   };
 
-  const handleNewName = (event) => {
+  const handleNewContact = (event) => {
     event.preventDefault();
 
-    const nameObject = {
+    const newContact = {
       name: newName,
       phone: newPhone,
     };
 
     for (const person of persons) {
-      if (person.name === nameObject.name) {
-        return alert(`// ${nameObject.name} // is already added to phonebook`);
+      if (person.name === newContact.name) {
+        if (
+          window.confirm(
+            `${newContact.name} it's already added.
+             Do you want to update the current number ${person.phone} 
+             with the new one: ${newContact.phone}`
+          )
+        ) {
+          contactService
+            .updateContact(person.id, newContact)
+            .then(() => {
+              setPersons((prevPersons) =>
+                prevPersons.map((p) => (p.id === person.id ? newContact : p))
+              );
+              setNotificationMessage(`${newName} modified`);
+              setTimeout(() => {
+                setNotificationMessage(null);
+              }, 3000);
+            })
+            .catch((error) => {
+              setNotificationMessage(
+                `Information of ${newName} has already been remove from the server`
+              );
+
+              setNotificationClass("error");
+
+              setTimeout(() => {
+                setNotificationMessage(null);
+                setNotificationClass("");
+              }, 4000);
+
+              setPersons(persons.filter((p) => p.id !== person.id));
+            });
+
+          setNewName("");
+          setNewPhone("");
+        }
+        return;
+      } else if (person.phone === newContact.phone) {
+        return alert(
+          `// ${newContact.phone} // is already added to phonebook,
+           and it's assigned to ${person.name}`
+        );
       }
     }
 
-    setPersons(persons.concat(nameObject));
+    contactService
+      .addContact(newContact)
+      .then((response) =>
+        setPersons((prevPersons) => prevPersons.concat(response))
+      );
+
+    setNotificationMessage(`Added ${newName}`);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 3000);
+
+    setNewName("");
+    setNewPhone("");
+  };
+
+  const handleDeleteContact = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      contactService.deleteContact(id);
+      setPersons(persons.filter((person) => person.id !== id));
+    }
   };
 
   const handleFilter = (event) => {
@@ -54,8 +121,14 @@ const App = () => {
       <FilterList handleFilter={handleFilter} />
 
       <h2>Add new</h2>
+      {notificationMessage !== null ? (
+        <Notification
+          message={notificationMessage}
+          notificationClass={notificationClass}
+        />
+      ) : null}
       <AddNewContactForm
-        handleNewName={handleNewName}
+        handleNewContact={handleNewContact}
         newName={newName}
         newPhone={newPhone}
         handleNameInput={handleNameInput}
@@ -63,7 +136,11 @@ const App = () => {
       />
 
       <h2>Contacts</h2>
-      <ContacList persons={persons} showFilteredPersons={showFilteredPersons} />
+      <ContacList
+        persons={persons}
+        showFilteredPersons={showFilteredPersons}
+        handleDeleteContact={handleDeleteContact}
+      />
     </div>
   );
 };
